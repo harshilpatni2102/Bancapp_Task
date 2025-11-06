@@ -2,7 +2,7 @@
 
 ## 📋 Project Overview
 
-This project implements an **automated bank reconciliation system** using **Machine Learning (Logistic Regression)** to match transactions between API source data and bank settlement records. The model achieves **100% test accuracy** and **1.0 AUC score**, making it production-ready for deployment.
+This project implements an **automated bank reconciliation system** using **Machine Learning (Logistic Regression)** to match transactions between API source data and bank settlement records. The model achieves **100% test accuracy** and **1.0 AUC score** on the given dataset, making it production-ready for deployment.
 
 ## 🎯 Objective
 
@@ -128,7 +128,6 @@ Bancapp_Task/
 │
 ├── main.ipynb                          # Main Jupyter notebook with full analysis
 ├── README.md                           # Project documentation (this file)
-├── predict_custom.py                   # Standalone script for custom predictions
 │
 ├── api_source.csv                      # Input: API transaction data
 ├── bank_settlement.csv                 # Input: Bank settlement data
@@ -145,60 +144,13 @@ Bancapp_Task/
 pip install pandas numpy scikit-learn matplotlib joblib
 ```
 
-### Option 1: Using the Jupyter Notebook (Training & Analysis)
+### Steps:
 1. **Clone/Download** this repository
 2. **Open** `main.ipynb` in Jupyter Notebook or VS Code
 3. **Run all cells** sequentially
 4. **Review** outputs and predictions in `reconciliation_predictions.csv`
 
-### Option 2: Using the Python Script (Quick Predictions)
-Use the standalone script for quick predictions on custom data:
-
-```bash
-python predict_custom.py --api your_api.csv --bank your_bank.csv --output predictions.csv
-```
-
-**Parameters:**
-- `--api`: Path to your API source CSV file (required)
-- `--bank`: Path to your Bank settlement CSV file (required)
-- `--model`: Path to trained model file (default: `logreg_recon.pkl`)
-- `--output`: Output file for predictions (default: `predictions.csv`)
-
-**Example:**
-```bash
-python predict_custom.py --api api_source.csv --bank bank_settlement.csv --output results.csv
-```
-
-### Using the Trained Model with Custom Dataset:
-
-#### Option 1: Using Helper Functions (Recommended)
-The notebook includes helper functions to work with custom datasets:
-
-```python
-# Load the helper functions from the notebook
-# Then use with your custom CSV files:
-
-# Step 1: Prepare your custom data
-custom_data = prepare_custom_data('your_api_file.csv', 'your_bank_file.csv')
-
-# Step 2: Make predictions
-predictions = predict_reconciliation(custom_data, 'logreg_recon.pkl')
-
-# Step 3: Get summary
-summary = get_reconciliation_summary(predictions)
-print(summary)
-
-# Step 4: Save results
-predictions.to_csv('custom_predictions.csv', index=False)
-```
-
-**Your CSV files must have these columns:**
-- **API File**: `utr`, `txn_date`, `amount`, `status`
-- **Bank File**: `utr`, `txn_date`, `settlement_date`, `amount`, `status`
-
-#### Option 2: Direct Prediction with Manual Features
-If you already have the features calculated:
-
+### Using the Trained Model:
 ```python
 import joblib
 import pandas as pd
@@ -208,10 +160,10 @@ model = joblib.load('logreg_recon.pkl')
 
 # Prepare your data with the same 4 features
 new_data = pd.DataFrame({
-    'amount_diff': [0, 150, 5],      # Absolute amount difference
-    'status_match': [1, 0, 1],       # 1=match, 0=no match
-    'utr_match': [1, 1, 1],          # 1=exists, 0=missing
-    'date_diff': [1, 3, 0]           # Days between txn and settlement
+    'amount_diff': [0, 150, 5],
+    'status_match': [1, 0, 1],
+    'utr_match': [1, 1, 1],
+    'date_diff': [1, 3, 0]
 })
 
 # Get predictions
@@ -271,23 +223,5 @@ List of features used by the model (for consistency)
 4. **Threshold Tuning**: Different thresholds serve different business needs
 5. **Business Context**: Understanding reconciliation requirements shaped the solution
 
-## 👤 Author
 
-**Internship Task Submission**  
-Bank Reconciliation ML Project
 
-## 📄 License
-
-This project is created for educational/interview purposes.
-
-## 🙏 Acknowledgments
-
-- Scikit-learn documentation
-- Pandas community
-- Bank reconciliation domain knowledge
-
----
-
-**Note**: This project demonstrates end-to-end ML workflow including data preprocessing, feature engineering, model training, evaluation, and deployment readiness.
-
-### ⭐ Model Status: **Production Ready**
